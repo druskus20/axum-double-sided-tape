@@ -111,4 +111,21 @@ mod tests {
             OtherError => reqwest::StatusCode::INTERNAL_SERVER_ERROR
         }
     );
+
+    define_route!(
+        SetMsg,
+        Post,
+        "/set_msg",
+        String,
+        (axum::extract::State<S>, axum::extract::Json<String>),
+        SetMsgResult,
+        SetMsgSuccess {
+            Done { new_msg: String } => reqwest::StatusCode::CREATED,
+            SuperGood => reqwest::StatusCode::ACCEPTED
+        },
+        SetMsgError {
+            NotFound => reqwest::StatusCode::NOT_FOUND,
+            OtherError => reqwest::StatusCode::INTERNAL_SERVER_ERROR
+        }
+    );
 }
