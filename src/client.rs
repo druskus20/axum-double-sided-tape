@@ -22,6 +22,7 @@ where
     }
 }
 
+#[derive(Clone, Debug)]
 pub struct Client {
     base_http_url: String,
     http_client: reqwest::Client,

@@ -31,43 +31,31 @@ server.
 
 ```rs
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
-pub struct GetMsgQueryArgs {
-    pub num: u32,
-    pub prefix: String,
+pub struct CreateUserArgs {
+    pub name: String,
+    pub surname: String,
 }
 
 define_route!(
-    GetMsg, // <-- Route
-    Get,    // <-- Method
-    "/get_msg", // <-- URL
-    // Request arguments (client)
-    GetMsgQueryArgs, 
-    // Axum handler input (server) 
-    (axum::extract::State<S>, axum::extract::Query<GetMsgQueryArgs>), 
-    // Success and error responses
-    GetMsgSuccess {
-        Done { new_msg: String } => reqwest::StatusCode::CREATED,
-        SuperGood => reqwest::StatusCode::ACCEPTED
-    },
-    GetMsgError {
-        NotFound => reqwest::StatusCode::NOT_FOUND,
-        OtherError => reqwest::StatusCode::INTERNAL_SERVER_ERROR
+    CreateUser,
+    Get,
+    "/create_user",
+    CreateUserArgs,
+    (State<S>, Json<CreateUserArgs>),
+    CreateUserResponse {
+        UserCreated { id: Uuid } => StatusCode::CREATED,
+        AlreadyExists => StatusCode::NOT_FOUND,
     }
 );
 
 define_route!(
-    SetMsg,
-    Post,
-    "/set_msg",
-    String,
-    (axum::extract::State<S>, axum::extract::Json<String>),
-    SetMsgSuccess {
-        Done { new_msg: String } => reqwest::StatusCode::CREATED,
-        SuperGood => reqwest::StatusCode::ACCEPTED
-    },
-    SetMsgError {
-        NotFound => reqwest::StatusCode::NOT_FOUND,
-        OtherError => reqwest::StatusCode::INTERNAL_SERVER_ERROR
+    GetUsers,
+    Get,
+    "/get_users",
+    (),
+    (State<S>,),
+    GetUsersResponse {
+        Users { users: Vec<User> } => StatusCode::OK,
     }
 );
 ```
