@@ -14,7 +14,7 @@ the server are automatically parsed into the right types.
 The name of the crate is intentionally bad, as you probably should not use it.
 It is tailored to my specific use case - so it sacrifices some flexibility.
 
-## Limitation
+## Limitations
 
 - Like in axum - there is no check for duplicate routes.
 - Like in axum - there is no check that all routes are handled in the server.
@@ -40,8 +40,10 @@ define_route!(
     GetMsg, // <-- Route
     Get,    // <-- Method
     "/get_msg", // <-- URL
-    GetMsgQueryArgs, // <-- Request arguments (client)
-    (axum::extract::State<S>, axum::extract::Query<GetMsgQueryArgs>), // <-- Axum handler input (server) 
+    // Request arguments (client)
+    GetMsgQueryArgs, 
+    // Axum handler input (server) 
+    (axum::extract::State<S>, axum::extract::Query<GetMsgQueryArgs>), 
     // Success and error responses
     GetMsgSuccess {
         Done { new_msg: String } => reqwest::StatusCode::CREATED,
