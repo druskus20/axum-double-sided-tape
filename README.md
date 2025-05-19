@@ -25,3 +25,48 @@ in the body as JSON.
 - The API crate cannot check that the signature of a Route is a valid signature
 for an Axum handler, but the compilation will fail when trying to implement the
 server.
+
+
+## Example
+
+```rs
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
+pub struct GetMsgQueryArgs {
+    pub num: u32,
+    pub prefix: String,
+}
+
+define_route!(
+    GetMsg,
+    Get,
+    "/get_msg",
+    GetMsgQueryArgs,
+    (axum::extract::State<S>, axum::extract::Query<GetMsgQueryArgs>),
+    GetMsgResult,
+    GetMsgSuccess {
+        Done { new_msg: String } => reqwest::StatusCode::CREATED,
+        SuperGood => reqwest::StatusCode::ACCEPTED
+    },
+    GetMsgError {
+        NotFound => reqwest::StatusCode::NOT_FOUND,
+        OtherError => reqwest::StatusCode::INTERNAL_SERVER_ERROR
+    }
+);
+
+define_route!(
+    SetMsg,
+    Post,
+    "/set_msg",
+    String,
+    (axum::extract::State<S>, axum::extract::Json<String>),
+    SetMsgResult,
+    SetMsgSuccess {
+        Done { new_msg: String } => reqwest::StatusCode::CREATED,
+        SuperGood => reqwest::StatusCode::ACCEPTED
+    },
+    SetMsgError {
+        NotFound => reqwest::StatusCode::NOT_FOUND,
+        OtherError => reqwest::StatusCode::INTERNAL_SERVER_ERROR
+    }
+);
+```
