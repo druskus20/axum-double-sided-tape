@@ -39,6 +39,26 @@ where
     }
 }
 
+/// Craft a Typed response from things that can be converted to a Result
+impl<T, E> IntoTypedResponse for Result<T, E>
+where
+    T: Into<Result<T, E>>,
+    E: Into<Result<T, E>>,
+{
+    fn typed(self) -> TypedResponse<Self> {
+        match self {
+            Ok(value) => TypedResponse {
+                status_code: StatusCode::OK,
+                payload: value.into(),
+            },
+            Err(err) => TypedResponse {
+                status_code: StatusCode::INTERNAL_SERVER_ERROR,
+                payload: err.into(),
+            },
+        }
+    }
+}
+
 pub trait Route<S> {
     type HandlerOutput: IntoTypedResponse;
     type HandlerInput;

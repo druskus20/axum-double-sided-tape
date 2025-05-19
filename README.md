@@ -42,7 +42,6 @@ define_route!(
     "/get_msg",
     GetMsgQueryArgs,
     (axum::extract::State<S>, axum::extract::Query<GetMsgQueryArgs>),
-    GetMsgResult,
     GetMsgSuccess {
         Done { new_msg: String } => reqwest::StatusCode::CREATED,
         SuperGood => reqwest::StatusCode::ACCEPTED
@@ -59,7 +58,6 @@ define_route!(
     "/set_msg",
     String,
     (axum::extract::State<S>, axum::extract::Json<String>),
-    SetMsgResult,
     SetMsgSuccess {
         Done { new_msg: String } => reqwest::StatusCode::CREATED,
         SuperGood => reqwest::StatusCode::ACCEPTED
