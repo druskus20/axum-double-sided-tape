@@ -37,11 +37,12 @@ pub struct GetMsgQueryArgs {
 }
 
 define_route!(
-    GetMsg,
-    Get,
-    "/get_msg",
-    GetMsgQueryArgs,
-    (axum::extract::State<S>, axum::extract::Query<GetMsgQueryArgs>),
+    GetMsg, // <-- Route
+    Get,    // <-- Method
+    "/get_msg", // <-- URL
+    GetMsgQueryArgs, // <-- Request arguments (client)
+    (axum::extract::State<S>, axum::extract::Query<GetMsgQueryArgs>), // <-- Axum handler input (server) 
+    // Success and error responses
     GetMsgSuccess {
         Done { new_msg: String } => reqwest::StatusCode::CREATED,
         SuperGood => reqwest::StatusCode::ACCEPTED
