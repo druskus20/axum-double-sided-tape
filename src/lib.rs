@@ -23,7 +23,7 @@ macro_rules! define_route {
             $(,)?
         }
     ) => {
-        pub type $result_type = Result<$success_enum, $error_enum>;
+        pub type $result_type = std::result::Result<$success_enum, $error_enum>;
 
         #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
         pub enum $success_enum {
