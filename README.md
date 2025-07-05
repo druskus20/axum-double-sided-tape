@@ -29,6 +29,8 @@ server.
 
 ## Example
 
+The API crate can define the routes:
+
 ```rs
 #[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct CreateUserArgs {
@@ -59,3 +61,38 @@ define_route!(
     }
 );
 ```
+
+The server can implement the routes like this:
+
+```rs
+
+pub async fn create_user(
+    State(state): State<AppState>,
+    Json(CreateUserArgs { name, surname }): Json<CreateUserArgs>,
+) -> TypedResponse<CreateUserResponse> {
+
+    // ... do your normal axum stuff here
+
+    CreateUserResponse::UserCreated { id }.typed()
+}
+```
+
+The client can make requests like this:
+
+```rs
+let client = Client::new("localhost:8080");
+let r = client
+    .request_for::<CreateUser>()
+    .with_args(CreateUserArgs { name, surname })
+    .send()
+    .await?;
+  
+
+let r = match r {
+    CreateUserResponse::UserCreated { id } => id,
+    CreateUserResponse::AlreadyExists => return Err(eyre!("User already exists")),
+};
+
+println!("User created with id: {r}");
+```
+

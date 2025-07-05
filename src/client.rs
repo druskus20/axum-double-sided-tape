@@ -98,7 +98,6 @@ where
         let request = args(method(&client, self.url), &self.args);
 
         let response = request.send().await?;
-        dbg!(&response);
 
         R::ResponseType::try_from_http_response(response).await
     }
